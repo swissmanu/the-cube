@@ -5,13 +5,15 @@
 	<meta name="description" content="An experiment with CSS3 transitions." />
 	<title>The Cube</title>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+	<script type="text/javascript" src="http://eightmedia.github.com/hammer.js/hammer.js"></script>
+	<script type="text/javascript" src="http://eightmedia.github.com/hammer.js/jquery.hammer.js"></script>
 	<script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
+	
 	<script type="text/javascript">
 		/* Default configuration */
 		var _config = {
 			enableKeys: false,
-			enableTouch: true,
+			enableTouch: false,
 			transformProperty: null,
 		}
 
@@ -115,17 +117,38 @@
 			});
 			
 			/* Touch Control */
-			$(document).swipeleft(function(e) {
+			$('#cube').hammer().bind('swipe',function(e) {
 				if(_config.enableTouch) {
-					rotate('left');
+					rotate(e.direction);
 				}
 			});
 			
-			$(document).swiperight(function(e) {
-				if(_config.enableTouch) {
-					rotate('right');
-				}
-			});
+			var rotate = (function() {
+				var x = y = 0,
+					cube = $('#cube')[0];
+
+				return function(direction) {
+					switch(direction) {
+						case 'left':
+							y -= 90;
+							break;
+
+						case 'right':
+							y += 90;
+							break;
+
+						case 'up':
+							x += 90;
+							break;
+
+						case 'down':
+							x -= 90;
+							break;
+					}
+					cube.style[_config.transformProperty] = 'translateZ(-160px) rotateX(' + x + 'deg) rotateY(' + y + 'deg)';
+				};
+			})();
+			
 		});
 	</script>
 	<style type="text/css">
